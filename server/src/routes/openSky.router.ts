@@ -1,5 +1,4 @@
 import express, { Request, Response } from 'express';
-import { console } from 'node:inspector/promises';
 
 const router = express.Router();
 
@@ -8,9 +7,11 @@ router.get('/states', async (req: Request, res: Response) => {
     const latitude = 44.933123;
     const longitude = -93.217654;
 
-    const sideInMiles = Math.sqrt(2); // 1.41
-    const latOffset = sideInMiles / 69;
-    const lonOffset = sideInMiles / (69 * Math.cos(latitude * Math.PI / 180));
+    const areainKm = 100; // Area in square kilometers
+
+    const sideInKm = Math.sqrt(areainKm);
+    const latOffset = sideInKm / 111;
+    const lonOffset = sideInKm / (111 * Math.cos((latitude * Math.PI) / 180));
 
     const lamin = latitude - latOffset;
     const lamax = latitude + latOffset;
@@ -21,7 +22,7 @@ router.get('/states', async (req: Request, res: Response) => {
 
     try {
 
-        const allStatesUrl = `https://opensky-network.org/api/states/all?lamin=${lamin}&lamax=${lamax}&lomin=${lomin}&lomax=${lomax}`;
+        const allStatesUrl = `https://opensky-network.org/api/states/all?lamin=${lamin}&lamax=${lamax}&lomin=${lomin}&lomax=${lomax}&extended=1`;
 
         const response = await fetch(allStatesUrl, {
             method: 'GET',
